@@ -39,14 +39,15 @@ class ResumeBot:
             return None
 
 
-if __name__ == "__main__":
-    bot = ResumeBot()
-    bot.greet()
-    if bot.name:
-        resume_text = bot.resume()
-        if resume_text:
-            skills = bot.skill_config('skills.txt')
-            matched_skills = bot.matched_skills(resume_text, skills)
-            st.write(bot.matching_skills(resume_text, skills))
-            que = bot.question_generator(matched_skills)
-            bot.evaluate(question=que)
+# if __name__ == "__main__":
+#     bot = ResumeBot()
+#     bot.greet()
+#     if bot.name:
+#         resume_text = bot.resume()
+#         if resume_text:
+#             skills = bot.skill_config('skills.txt')
+#             matched_skills = bot.matched_skills(resume_text, skills)
+#             st.write(bot.matching_skills(resume_text, skills))
+#             que = bot.question_generator(matched_skills)
+#             bot.evaluate(question=que)
+#             return None

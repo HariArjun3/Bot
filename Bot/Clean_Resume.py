@@ -1,4 +1,4 @@
-def clean_resume(self, resume_text):
+def clean_resume(resume_text):
     if resume_text is None:
         print("No text found in resume.")
         return ""

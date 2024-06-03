@@ -1,6 +1,6 @@
-def question_generator(self, skills):
-    self.questions = [question_generation(skill) for skill in skills]
-    que = []
-    for i in range(len(self.questions)):
-        que.append(self.questions[i])
-    return que
+from Question_Generation import question_generation
+
+
+def question_generator(skills):
+    questions = question_generation(skills)
+    return questions
