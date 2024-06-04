@@ -52,7 +52,7 @@ while(cap.isOpened()):
 
 cap.release()
 cv2.destroyAllWindows()
-# Path: Bor.py
+# Path: Bot.py
 # Compare this snippet from CV.py:
 # import cv2
 

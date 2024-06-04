@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Analyzer Results</title>
+</head>
+<body>
+    <h1>Resume Analyzer Results</h1>
+    <h2>Questions:</h2>
+    <ul>
+        {% for question in questions %}
+            <li>{{ question }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Your Answers:</h2>
+    <p>{{ answers }}</p>
+    <h2>Evaluation:</h2>
+    <p>{{ evaluation_result }}</p>
+</body>
+</html>

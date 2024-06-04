@@ -1,32 +1,32 @@
 import streamlit as st
 
 
-
 def evaluate(question):
     print('question', question)
-    answers = {}
-    questions = question
-    # Get the first question
-    # question = get_question()
+    st.write(question)
 
-    # Ask the user the current question and get the answer
-    answer = st.text_input(question)
+    answers = {}  # Initialize an empty dictionary to store answers
+    index = 0
 
-    # Store the current question and answer in the dictionary
-    answers[question] = answer
+    for i in question:
+        st.write(f"Question {index + 1}: {i}")
 
-    # Display a submit button
-    if st.button("Submit"):
-        # Print the dictionary of questions and answers
-        st.write("Answers:", answers)
+        text_area_key = f"text_area_{i}"
 
-        # Reset the answers dictionary for the next questionnaire
-        answers.clear()
+        answer_text_area = st.text_area("Your Answers (Separate with commas):", key=text_area_key)
 
-        # Check if there are more questions
-        if questions:
-            # Get the next question
-            question = questions.pop(0)
+        submit_button = st.button("Submit All Answers", key=f"submit_{i}")
 
+        if submit_button:
+            try:
+                user_answers = answer_text_area.strip().split(',')
+                answers[i] = [answer.strip() for answer in user_answers]  # Clean up whitespace
+            except ValueError:
+                st.error("Please enter answers separated by commas.")
+                continue
 
-# st.write("User answers:", user_answers)
+            answer_text_area.value = ""
+
+            index += 1
+
+    print(f"Collected answers: {answers}")
