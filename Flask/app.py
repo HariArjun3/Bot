@@ -12,5 +12,15 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/file', methods=['GET', 'POST'])
+def file():
+    if request.method == 'POST':
+        file = request.files['file']
+        file.save(os.path.join('uploads', file.filename))
+        print(file.read())
+        return 'File uploaded successfully'
+    # return render_template('file.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True)

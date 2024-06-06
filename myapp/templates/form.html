@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Form</title>
+    <title>Upload PDF</title>
 </head>
 <body>
-    <h1>Resume Bot</h1>
-    <form method="POST">
+<h1>Resume Bot</h1>
+    <h1>Upload a PDF file to extract text</h1>
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <a href="{% url 'get_resume'%}"<button type="submit">Submit</button></a>
+        <input type="file" name="pdf_file" accept="application/pdf" required>
+        <button type="submit">Upload</button>
     </form>
+
+    {% if extracted_text %}
+        <h2>Extracted Text:</h2>
+        <pre>{{ extracted_text }}</pre>
+    {% endif %}
 </body>
 </html>

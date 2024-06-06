@@ -1,7 +1,12 @@
 from django import forms
+from .models import person
+import re
 
 
-class ResumeForm(forms.Form):
-    name = forms.CharField(label='Name', max_length=100)
-    email = forms.EmailField(label='Email', max_length=100)
-    file = forms.FileField(label='Upload Resume')
+class PersonForm(forms.ModelForm):
+    # name = forms.CharField(label='Names', max_length=100)
+    # file = forms.FileField()
+
+    class Meta:
+        model = person
+        fields = ['name', 'file']
