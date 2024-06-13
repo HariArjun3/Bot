@@ -3,11 +3,12 @@ from openai import OpenAI
 import re
 
 
-def question_generation(questions):
+def question_generation(questions,experience):
     client = OpenAI(
-        api_key='sk-proj-q90Vk8IpUcY9bn66odEtT3BlbkFJ4VYEjBHbxCDuy5oYuaGU',
+        api_key='sk-proj-WiYKJkjVE8Fw8cA0eybWT3BlbkFJTX5vHTDGzn5569zERZCl',
     )
-    t = f'{questions}interview Questions for each programming languages and dont mention the language name in the question'
+    t = (f'{questions}interview Questions for each programming languages with {experience} level  and dont mention the language name in the '
+         f'question')
 
     chat_completion = client.chat.completions.create(
         messages=[

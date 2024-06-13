@@ -1,37 +1,44 @@
-from django.shortcuts import render, HttpResponse
-from .forms import PersonForm
-import os
-from django.shortcuts import render
-from django.conf import settings
-from PyMuPDF import pdfplumber  # or import pdfplumber
+from django.shortcuts import render, HttpResponse, redirect
+from .forms import MyFileForm
+import PyPDF2
 
-
-# Create your views here.
 
 def home(request):
-    return render(request, 'home.html')
+    mydata = MyFileUpload.objects.all()
+    myform = MyFileForm()
+    if mydata != '':
+        context = {'form': myform, 'mydata': mydata}
+        return render(request, 'home.html', context)
+    else:
+        context = {'form': myform}
+        return render(request, "home.html", context)
 
 
-def upload_pdf(request):
-    extracted_text = None
-    if request.method == 'POST' and request.FILES['pdf_file']:
-        pdf_file = request.FILES['pdf_file']
+def upload_file(request):
+    if request.method == "POST":
+        myform = MyFileForm(request.POST, request.FILES)
+        if myform.is_valid():
+            MyFileName = request.POST.get('file_name')
+            MyFile = request.FILES.get('file')
 
-    pdf_path = os.path.join(settings.MEDIA_ROOT, pdf_file.name)
+            exists = MyFileUpload.objects.filter(my_file=MyFile).exists()
 
-    with open(pdf_path, 'wb+') as destination:
-        for chunk in pdf_file.chunks():
-            destination.write(chunk)
+            if exists:
+                messages.error(request, 'The file %s is already exists...!!!' % MyFile)
+            else:
+                # Save the uploaded file
+                uploaded_file = MyFileUpload.objects.create(file_name=MyFileName, my_file=MyFile)
+                uploaded_file.save()
+                messages.success(request, "File uploaded successfully.")
 
-    extracted_text = extract_text_from_pdf(pdf_path)
-    os.remove(pdf_path)  # Clean up uploaded file after extraction
+                # Extract text from PDF if it's a PDF file
+                if MyFile.content_type.startswith('application/pdf'):
+                    pdf_reader = PyPDF2.PdfReader(MyFile)
+                    text = ""
+                    for page_num in range(len(pdf_reader.pages)):
+                        page = pdf_reader.pages[page_num]
+                        text += page.extract_text()
+                    context = {'text': text}
+                    return render(request, 'config_file.html', context)
 
-    return render(request, 'extractor/upload.html', {'extracted_text': extracted_text})
-
-
-def extract_text_from_pdf(pdf_path):
-    text = ""
-    doc = fitz.open(pdf_path)
-    for page in doc:
-        text += page.get_text()
-    return text
+    return redirect("home")

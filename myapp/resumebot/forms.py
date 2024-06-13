@@ -1,12 +1,6 @@
 from django import forms
-from .models import person
-import re
 
 
-class PersonForm(forms.ModelForm):
-    # name = forms.CharField(label='Names', max_length=100)
-    # file = forms.FileField()
-
-    class Meta:
-        model = person
-        fields = ['name', 'file']
+class MyFileForm(forms.Form):
+    file_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    file = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control'}), label='Upload File')
