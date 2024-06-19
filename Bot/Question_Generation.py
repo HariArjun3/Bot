@@ -5,7 +5,7 @@ import re
 
 def question_generation(questions,experience):
     client = OpenAI(
-        api_key='sk-proj-WiYKJkjVE8Fw8cA0eybWT3BlbkFJTX5vHTDGzn5569zERZCl',
+        api_key='sk-proj-QzzYubagHVHzvaZCGRYLT3BlbkFJTf0W3pJt40YbeljCWAjM',
     )
     t = (f'{questions}interview Questions for each programming languages with {experience} level  and dont mention the language name in the '
          f'question')

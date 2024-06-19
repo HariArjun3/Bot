@@ -1,3 +1,6 @@
+import re
+
+
 def clean_resume(resume_text):
     if resume_text is None:
         print("No text found in resume.")

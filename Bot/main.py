@@ -1,12 +1,14 @@
 from Bot import ResumeBot
 from Clean_Resume import clean_resume
 from Question_Generation import question_generation
-# from Evaluate import evaluate
 from Question_generator import question_generator
 import Percentage as ms
 import Config_file as cf
 import streamlit as st
 import Experience_checker as ec
+import Clean_Resume as cr
+from pymongo import MongoClient
+import hashlib
 
 
 def main():
@@ -24,38 +26,42 @@ def main():
                 st.write(matched_skills)
                 exp = ec.Experience()
 
-                if 'question' not in st.session_state:
-                    st.session_state['question'] = question_generator(matched_skills, exp)
-                print('question', st.session_state['question'])
-                st.write("All Questions:")
+                client = MongoClient('localhost', 27017)
+                db = client['Practice']
+                collection = db['Bot']
 
-                if 'answers' not in st.session_state:
-                    st.session_state['answers'] = {}  # Initialize an empty dictionary to store answers
+                user_data = cr.clean_resume(resume_text)
+                name = user_data['name']
+                number = user_data['number']
+                email = user_data['email']
 
-                all_user_answers = {}  # Dictionary to store answers for all questions
+                def generate_mongo_id_like(string):
+                    hash_object = hashlib.sha256(string.encode())
+                    return hash_object.hexdigest()
 
-                for idx, i in enumerate(st.session_state['question'], start=1):
-                    st.write(f"Question {idx}: {i}")
+                _id = generate_mongo_id_like(name)
+                if not collection.find_one({'_id': _id}):
+                    collection.insert_one(
+                        {'_id': _id, 'name': name, 'number': number, 'email': email,
+                         'skills': matched_skills, 'percentage': percentage,
+                         'experience': exp, 'question': question_generator(matched_skills, exp)})
 
-                    text_area_key = f"text_area_{i}"
-                    answer_text_area = st.text_area("Your Answers (Separate with commas):", key=text_area_key)
+                def PrintQuestion(_id):
+                    client = MongoClient('localhost', 27017)
+                    db = client['Practice']
+                    collection = db['Bot']
+                    answer = {}
+                    for question in collection.find({'_id': _id}):
+                        for i in question['question']:
+                            st.write(f"Question: {i}")
+                            answer[i] = st.text_input("Your Answer: ", key=f"{i}")
+                    submit_button = st.button("Submit Answers")
+                    if submit_button:
+                        print(answer)
+                        for key, value in answer.items():
+                            collection.update_one({'_id': _id}, {'$set': {f'question.{key}': value}})
 
-                # Single submit button at the end
-                submit_button = st.button("Submit All Answers", key="submit_all")
-
-                if submit_button:
-                    try:
-                        for idx, i in enumerate(st.session_state['question'], start=1):
-                            user_answers = st.session_state[text_area_key].strip().split(',')
-                            all_user_answers[i] = [answer.strip() for answer in user_answers]
-                        # Update st.session_state['answers'] with all answers at once
-                        st.session_state['answers'] = all_user_answers
-                    except ValueError:
-                        st.error("Please enter answers separated by commas for all questions.")
-
-                st.write(f"Collected answers: {st.session_state['answers']}")
-                if st.button("End Session"):
-                    st.session_state.clear()
+                PrintQuestion(_id)
 
 
 if __name__ == "__main__":

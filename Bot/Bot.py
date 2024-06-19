@@ -14,6 +14,7 @@ class ResumeBot:
 
     def greet(self):
         self.name = st.text_input("Hi, I'm ResumeBot. What's your name? ")
+        return self.name
 
     def resume(self):
         resume = st.text_input(
