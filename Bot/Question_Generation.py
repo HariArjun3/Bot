@@ -1,13 +1,25 @@
 import os
-from openai import OpenAI
-import re
+import openai
+import streamlit as st
+
+api_key = st.secrets["openai"]["api_key"]
+if api_key:
+    openai.api_key = api_key
+else:
+    st.error("API key not found in Streamlit secrets.")
 
 
-def question_generation(questions,experience):
-    client = OpenAI(
-        api_key='sk-proj-QzzYubagHVHzvaZCGRYLT3BlbkFJTf0W3pJt40YbeljCWAjM',
-    )
-    t = (f'{questions}interview Questions for each programming languages with {experience} level  and dont mention the language name in the '
+def question_generation(questions, experience):
+    if experience == 'Fresher(0-2Y)':
+        experience = 'Easy'
+    elif experience == 'Intermediate(2-4Y)':
+        experience = 'Medium'
+    elif experience == 'Experienced(Above 4Y)' or experience == 'Expert(Above 10Y)':
+        experience = 'Hard'
+
+    client = openai.OpenAI(api_key=api_key)
+    t = (f'{questions}interview Questions for each programming languages with {experience} level  and dont mention '
+         f'the language name in the'
          f'question')
 
     chat_completion = client.chat.completions.create(
@@ -61,7 +73,7 @@ def question_generation(questions,experience):
 
 
 if __name__ == "__main__":
-    question = question_generation(['C++','Python'])
+    question = question_generation(['C++', 'Python'])
     print(question)
     # answer = answer_generation(question)
     # print(answer)

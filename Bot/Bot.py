@@ -1,7 +1,7 @@
 import re
 import streamlit as st
 import PyPDF2
-from Question_Generation import question_generation
+# from Question_Generation import question_generation
 
 
 class ResumeBot:
